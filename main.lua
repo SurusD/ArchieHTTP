@@ -1,7 +1,7 @@
 local archie_http = nil
-local response = gg.makeRequest("https://raw.githubusercontent.com/SurusD/ArchieHTTP/refs/heads/master/archie_http.lua")
-if type(response) == "table" and response.code == 200 then
-    archie_http = load(response.content, "lib", "t")
+local archie = gg.makeRequest("https://raw.githubusercontent.com/SurusD/ArchieHTTP/refs/heads/master/archie_http.lua")
+if type(archie) == "table" and archie.code == 200 then
+    archie_http = load(archie.content, "lib", "t")()
 end
 if archie_http == nil then
     return error("failed to load archie http")
