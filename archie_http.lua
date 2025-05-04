@@ -50,21 +50,25 @@ local function builder()
             if type(callback) ~= "function" then
                 return error(invalidArgument("onSuccess(self, callback: function)", "function", type(callback)))
             end
-            self._onSuccess = callback
+            if self._onSuccess then
+                local originalListener = self._onSuccess
+                self._onSuccess = function(response)
+                    originalListener(response)
+                    callback(response)
+                end
+            else
+                self._onSuccess = callback
+            end
             return self
         end,
         autoload = function(self, withName)
-            local originalListener = self._onSuccess
-            self._onSuccess = function(response)
+            self:onSuccess(function(response)
                 if withName then
                     _G[tostring(withName)] = load(response.content)()
                 else
                     load(response.content)()
                 end
-                if originalListener then
-                    originalListener(response)
-                end
-            end
+            end)
             return self
         end,
         request = function(self)
