@@ -53,6 +53,19 @@ local function builder()
             self._onSuccess = callback
             return self
         end,
+        autoload = function(self, withName)
+            local originalListener = self._onSuccess
+            self._onSuccess = function(response)
+                if withName then
+                    _G[tostring(withName)] = load(response.content)()
+                else
+                    load(response.content)()
+                end
+                if originalListener then
+                    originalListener(response)
+                end
+            end
+        end,
         request = function(self)
             if not self._url then return error("Archie: request to what? Please provide URl: :withURL(url: string)") end
             local url = self._url
