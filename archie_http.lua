@@ -43,7 +43,15 @@ local function builder()
             if type(callback) ~= "function" then
                 return error(invalidArgument("onFail(self, callback: function)", "function", type(callback)))
             end
-            self._onFail = callback
+            if self._onFail then
+                local originallistener = self._onFail
+                self._onFail = function(response)
+                    originallistener(response)
+                    callback(response)
+                end
+            else
+                self._onFail = callback
+            end
             return self
         end,
         onSuccess = function(self, callback)
