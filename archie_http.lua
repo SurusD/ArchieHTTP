@@ -65,6 +65,7 @@ local function builder()
                     originalListener(response)
                 end
             end
+            return self
         end,
         request = function(self)
             if not self._url then return error("Archie: request to what? Please provide URl: :withURL(url: string)") end
