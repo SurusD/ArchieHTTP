@@ -46,10 +46,13 @@ local function builder()
             if type(callback) ~= "function" then
                 return error(invalidArgument("onFail(self, callback: function)", "function", type(callback)))
             end
-            self._onFail = self._onFail and function(response)
-                self._onFail(response)
+            local originalOnFail = self._onFail
+            self._onFail = function(response)
+                if originalOnFail then
+                    originalOnFail(response)
+                end
                 callback(response)
-            end or callback
+            end
             return self
         end,
 
@@ -57,10 +60,13 @@ local function builder()
             if type(callback) ~= "function" then
                 return error(invalidArgument("onSuccess(self, callback: function)", "function", type(callback)))
             end
-            self._onSuccess = self._onSuccess and function(response)
-                self._onSuccess(response)
+            local originalOnSuccess = self._onSuccess
+            self._onSuccess = function(response)
+                if originalOnSuccess then
+                    originalOnSuccess(response)
+                end
                 callback(response)
-            end or callback
+            end
             return self
         end,
 
