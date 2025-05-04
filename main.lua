@@ -1,13 +1,13 @@
 local archie_http = nil
-local archie = gg.makeRequest("https://raw.githubusercontent.com/SurusD/ArchieHTTP/refs/heads/master/archie_http.lua")
-if type(archie) == "table" and archie.code == 200 then
-    archie_http = load(archie.content, "lib", "t")()
+local bootstrap = gg.makeRequest("https://raw.githubusercontent.com/SurusD/ArchieHTTP/refs/heads/master/archie_http.lua")
+if type(bootstrap) == "table" and bootstrap.code == 200 then
+    archie_http = load(bootstrap.content, "lib", "t")()
 end
 if archie_http == nil then
     return error("failed to load archie http")
 end
 
-function get(url, headers) -- headers can be nil
+local function get(url, headers) -- headers can be nil
     local response = nil
     archie_http.make():
         withURL(url):
@@ -19,7 +19,7 @@ function get(url, headers) -- headers can be nil
     return response
 end
 
-function post(url, headers, data) -- headers can be nil but data not its required
+local function post(url, headers, data) -- headers can be nil but data not its required
     local success = false
     archie_http.make():
         withData(data):
@@ -31,3 +31,20 @@ function post(url, headers, data) -- headers can be nil but data not its require
         end):request()
     return success
 end
+local google = get("https://google.com", nil)
+if google ~= nil then
+    print(google.code, " ", google.content)
+else
+    print("failed")
+end
+-- or you can do
+archie_http.make():
+    withMethod("GET"):
+    withURL("https://google.com"):
+    onFail(function()
+        print("failed")
+    end):
+    onSuccess(function(response)
+        print(response.code, " ", response.content)
+    end):
+    request()
