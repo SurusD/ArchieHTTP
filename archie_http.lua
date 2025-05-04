@@ -70,9 +70,13 @@ local function builder()
                 local headers = self._headers
                 local response = gg.makeRequest(url, headers)
                 if type(response) == "table" and response.code == 200 then
-                    self._onSuccess(response)
+                    if self._onSuccess then
+                        self._onSuccess(response)
+                    end
                 else
-                    self._onFail()
+                    if self._onFail then
+                        self._onFail()
+                    end
                 end
             end
         end
