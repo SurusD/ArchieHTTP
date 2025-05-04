@@ -28,8 +28,8 @@ local function builder()
             return self
         end,
         withHeaders = function(self, headers)
-            if type(headers) ~= "table" then
-                return error(invalidArgument("withHeaders(self, headers: table)", "table",
+            if type(headers) ~= "table" or type(headers) ~= "nil" then
+                return error(invalidArgument("withHeaders(self, headers: table | nil)", "table",
                     type(headers)))
             end
             self._headers = headers
